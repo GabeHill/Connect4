@@ -7,42 +7,40 @@ import object.Player;
 
 public class Game {
 	private static char[][] board;
+	private static int[] lastPlace = new int[2];
 	private static Player[] players;
 
 	private static boolean checkChar(int x, int y, char piece) {
 		// TODO double check this shit works
-		if ((x > board.length || y > board[x].length) || (x < 0 || y < 0) || !(board[x][y] == piece)) {
+		if ((x > board.length - 1 || y > board[x].length - 1) || (x < 0 || y < 0)) {
 			return false;
-		} else {
+		} else if ((board[x][y] == piece)) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
-	private static boolean checkNeighbor(char piece, int x, int y, Direction d) {
+	private static int checkNeighbor(char piece, int[] placed, Direction d) {
 		// TODO should work but must check
-		if (x < board.length && x >= 0 && y >= 0 && y < board[x].length) {
-			if (checkChar(x, y, piece)) {
-				return checkNeighbor(piece, x + d.xMod, y + d.yMod, d);
+		if (placed[1] < board.length && placed[1] >= 0 && placed[0] >= 0 && placed[0] < board[placed[1]].length) {
+			if (checkChar(placed[0], placed[1], piece)) {
+				final int f = checkNeighbor(piece, new int[] { placed[0] + d.xMod, placed[1] + d.yMod }, d);
+				return 1 + f;
 			} else {
-				return false;
+				return 0;
 			}
-		} else {
-			return false;
 		}
+		return 0;
 	}
 
 	private static boolean checkWin(char piece) {
-		int count = 0;
 		final Direction[] dirs = Direction.values();
 		for (final Direction d : dirs) {
-			if (checkNeighbor(piece, 0, 0, d)) {
-				count++;
-			} else {
-				count = 0;
-			}
-			if (count >= 4) {
+			if (checkNeighbor(piece, lastPlace, d) > 3) {
 				return true;
 			}
+
 		}
 
 		return false;
@@ -87,6 +85,8 @@ public class Game {
 
 			if (board[row][column] == '0') {
 				board[row][column] = piece;
+				lastPlace[0] = row;
+				lastPlace[1] = column;
 				return true;
 			} else {
 				return placePiece(column, piece, row + 1);
