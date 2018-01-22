@@ -11,7 +11,6 @@ public class Game {
 	private static Player[] players;
 
 	private static boolean checkChar(int x, int y, char piece) {
-		// TODO double check this shit works
 		if ((x > board.length - 1 || y > board[x].length - 1) || (x < 0 || y < 0)) {
 			return false;
 		} else if ((board[x][y] == piece)) {
@@ -22,7 +21,6 @@ public class Game {
 	}
 
 	private static int checkNeighbor(char piece, int[] placed, Direction d) {
-		// TODO should work but must check
 		if (placed[1] < board.length && placed[1] >= 0 && placed[0] >= 0 && placed[0] < board[placed[1]].length) {
 			if (checkChar(placed[0], placed[1], piece)) {
 				final int f = checkNeighbor(piece, new int[] { placed[0] + d.xMod, placed[1] + d.yMod }, d);
