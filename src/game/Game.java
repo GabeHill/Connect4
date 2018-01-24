@@ -9,6 +9,7 @@ public class Game {
 	private static char[][] board;
 	private static int[] lastPlace = new int[2];
 	private static Player[] players;
+	private static int turnCounter = 0;
 
 	private static boolean checkChar(int x, int y, char piece) {
 		if ((x > board.length - 1 || y > board[x].length - 1) || (x < 0 || y < 0)) {
@@ -111,7 +112,11 @@ public class Game {
 			} else {
 				Player winner = null;
 				do {
-					winner = turn();
+					if (!(turnCounter >= 43)) {
+						winner = turn();
+					} else {
+						winner = new Player("Tie. Nobody", ' ');
+					}
 				} while (winner == null);
 				System.out.println(winner.name + " wins.");
 				play = ConsoleIO.promptForBool("Would you like to go again? y/n", "y", "n");
@@ -126,6 +131,7 @@ public class Game {
 			while (!placePiece(player.getChoice("What column? 1-6", 1, 6) - 1, player.piece, 0)) {
 				System.out.println("That column is full.");
 			}
+			turnCounter++;
 			if (checkWin(player.piece)) {
 				return player;
 			}
